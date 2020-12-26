@@ -2,7 +2,7 @@ let SERVER_API = "https://uxcandy.com/~shapoval/test-task-backend/v2/";
 const TIMEOUT = 10000;
 export const Fetchs = async (url, data, method, token, cb) => {
  let result;
- url = url+'?developer=Maksat';
+ url = url+'?developer=MeylisTask';
  if (method !== "GET") {
     const form = new FormData();
     let keys = Object.keys(data);

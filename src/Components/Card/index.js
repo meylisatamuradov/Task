@@ -35,7 +35,7 @@ export default function CardComponent({ task, editClick }) {
         <CardHeader
           avatar={task.status == 0 || task.status == 1 ? <Clear /> : <Check />}
           title={task.username}
-          subheader={task.status == 1 || task.status == 11 ?  (<>{task.email} <b>Modified by admin</b></> ): task.email }
+          subheader={task.status == 1 || task.status == 11 ?  (<>{task.email} <br /><b>Modified by admin</b></> ): task.email }
           action={
             isLoggedIn ? (
               <IconButton

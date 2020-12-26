@@ -158,7 +158,7 @@ export default function AddTask({
           <>
             Status:
             <Switch
-              checked={task.status == 0 ? false : true}
+              checked={task.status == 0 || task.status == 1 ? false : true}
               onChange={handleSwitchChenge}
               name="status"
               color="primary"
