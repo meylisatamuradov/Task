@@ -51,28 +51,58 @@ export default function AddTask({
     setTask({ ...task, [e.target.name]: e.target.value });
   };
 
+  const handleSwitchChenge = () => {
+    setTask((prev) => ({
+      ...prev,
+      status:
+        prev.status == 0
+          ? 10
+          : prev.status == 1
+          ? 11
+          : prev.status == 10
+          ? 0
+          : 1,
+    }));
+  };
+
   const handleSubmit = async () => {
     if (from !== "add") {
       if (task.text.length > 0) {
-        var res = await dispatch(editTask(task, localStorage.getItem("token")));
-        console.log(res)
-        if (res === "success") {
+        if (localStorage.getItem("token")) {
+          let newTask = task;
+          if (task.text !== propTask.text) {
+            newTask.status = task.status == 0 || task.status == 1 ? 1 : 11;
+            setTask({
+              ...task,
+              status: task.status == 0 || task.status == 1 ? 1 : 11,
+            });
+          }
+          setOpen(false);
+          var res = await dispatch(
+            editTask(newTask, localStorage.getItem("token"))
+          );
+          if (res === "success") {
+            setError(true);
+            setErrorText("The task edited successfully");
+            setErrorType("success");
+          } else if (res === "token_error") {
+            setError(true);
+            setErrorText("Token expired. Logout and Login again");
+            setErrorType("error");
+          } else {
+            setError(true);
+            setErrorText("Something went wrong");
+            setErrorType("error");
+          }
+        } else {
           setError(true);
-          setErrorText("The task edited successfully");
-          setErrorType("success");
+          setErrorText("First sign in then try to edit");
+          setErrorType("error");
+          setTask(propTask);
         }
-       else if (res === "token_error") {
-        setError(true);
-        setErrorText("Token expired. Logout and Login again");
-        setErrorType("error");
-      } else {
-        setError(true);
-        setErrorText("Something went wrong");
-        setErrorType("error");
-      }
 
-      setOpen(false);
-    }
+        setOpen(false);
+      }
     } else {
       if (
         isEmailValid(task.email) &&
@@ -129,9 +159,7 @@ export default function AddTask({
             Status:
             <Switch
               checked={task.status == 0 ? false : true}
-              onChange={() =>
-                setTask({ ...task, status: task.status == 0 ? 1 : 0 })
-              }
+              onChange={handleSwitchChenge}
               name="status"
               color="primary"
             />
@@ -142,6 +170,7 @@ export default function AddTask({
             onError={(errors) => console.log("Error", errors)}
           >
             <TextValidator
+            autoFocus
               variant="outlined"
               margin="normal"
               label="User name"
@@ -165,14 +194,19 @@ export default function AddTask({
               validators={["required", "isEmail"]}
               errorMessages={["this field is required", "email is not valid"]}
             />
-            <TextareaAutosize
+            <TextValidator
               className={classes.addTaskModalWidth}
+              variant="outlined"
+              fullWidth
               aria-label="empty textarea"
+              multiline
               placeholder="Task"
               name="text"
-              rowsMin={15}
+              rows={12}
               value={task.text}
               onChange={handleChange}
+              validators={["required"]}
+              errorMessages={["this field is required"]}
             />
             <DialogActions>
               <Button

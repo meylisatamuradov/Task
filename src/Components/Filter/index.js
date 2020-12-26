@@ -8,7 +8,9 @@ import {
 } from "@material-ui/core";
 import { useStyles } from "./useStyles";
 
+
 const fields = ["username", "email", "status"];
+// Сортировка
 const sort = ["asc", "desc"];
 
 export default function GroupedSelect({ handleApply, handleChangeFilters }) {
@@ -18,6 +20,7 @@ export default function GroupedSelect({ handleApply, handleChangeFilters }) {
     <div className={classes.divBorder}>
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="grouped-select">Field</InputLabel>
+        {/* Фильтрация */}
         <Select
           defaultValue={fields[0]}
           name="field"

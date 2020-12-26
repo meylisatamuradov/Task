@@ -15,13 +15,13 @@ import { setLoading, setLogout } from "../../Redux/actions";
 import { useStyles } from "./useStyles";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
-// Alert Modal window
+// Функция: Модального окна
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function Login() {
-  //  Alert Modal window: state
+  //  Состояние модального окна
   const [error, setError] = useState(false); // state no date
   const [errorText, setErrorText] = useState(""); // state no date
   const [errorType, setErrorType] = useState("error"); // state no date
@@ -29,6 +29,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
+  // Читаем состояние из стора
   const { isLoggedIn } = useSelector((state) => state);
   const [form, setForm] = useState({
     username: "",
@@ -41,32 +42,37 @@ export default function Login() {
     setOpen(true);
   };
 
+  // Функия вызова модального окна входа.
   const handleSubmit = async () => {
+    // Условие удаления токена 
     if (isLoggedIn) {
       localStorage.clear();
       setOpen(false);
       dispatch(setLogout(false));
+      // После удаления поля инпута пусты
       setForm({
         username: "",
         password: "",
       });
     } else {
+      // условие, входа через логин и пароль
       if (form.username.length > 0 && form.password.length > 0) {
         setOpen(false);
         dispatch(setLoading(true));
-        // Request to server
+        // Запрос на сервер
         await Fetchs("login", form, "POST", null, (res) => {
           dispatch(setLoading(false));
+        
           if (res.status === "ok") {
             localStorage.setItem("token", res.message.token);
             dispatch(setLogout(true));
 
-            setError(true); // Modal window for successful request
+            setError(true); // Модальное окно успешного запроса на сервер
             setErrorText("Login success");
             setErrorType("success");
           } else {
             setOpen(true);
-            setError(true); // Modal, request not successful
+            setError(true); // Модальное окно ошибки
             setErrorText("Login failed");
             setErrorType("error");
           }
@@ -75,6 +81,7 @@ export default function Login() {
     }
   };
 
+  // 
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -87,11 +94,13 @@ export default function Login() {
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
         {isLoggedIn ? "Log out" : "Log in"}
       </Button>
+    
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
         aria-labelledby="form-dialog-title"
       >
+        {/* Валидация форм */}
         <ValidatorForm
           inpuRef="form"
           onSubmit={handleSubmit}
@@ -116,7 +125,6 @@ export default function Login() {
                   onChange={handleChange}
                 />
                 <TextValidator
-                  autoFocus
                   margin="dense"
                   name="password"
                   label="Password"
@@ -145,7 +153,7 @@ export default function Login() {
         </ValidatorForm>
       </Dialog>
 
-      {/* Alert modal window, No data available */}
+      {/* Алерт: модальное окно */}
       <Snackbar
         open={error}
         autoHideDuration={4000}
