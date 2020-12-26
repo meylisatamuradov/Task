@@ -11,6 +11,7 @@ export default function CardComponent({ task, editClick }) {
   const [content, setContent] = useState(
     task.text.length > 150 ? task.text.substring(0, 150) : task.text
   );
+  
   // Первоночальное состояние подсказки 
   const [readMore, setReadMore] = useState(" ...Read more");
   // Проверка авторизации
